@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
+// import { Analytics } from "@vercel/analytics/next";
 import { Hotjar } from "./components/Hotjar";
 import { Clarity } from "./components/Clarity";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -37,7 +37,7 @@ export default function RootLayout({
       >
         {children}
         {/* <WhatsAppButton /> */}
-        <Analytics />
+        {/* <Analytics /> */}
         <Hotjar id="6475950" sv={6} />
         <Clarity id="sy5bqnel6l" />
       </body>

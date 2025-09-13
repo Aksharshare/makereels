@@ -1,6 +1,6 @@
 {
-  "input_folder": "D:\\\\opt\\\\video-automation\\\\input",
-  "output_folder": "D:\\\\opt\\\\video-automation\\\\output",
+  "input_folder": "C:\\\\Users\\\\sendt\\\\Downloads\\\\makereels\\\\automationtool\\\\input",
+  "output_folder": "C:\\\\Users\\\\sendt\\\\Downloads\\\\makereels\\\\automationtool\\\\output",
   "pipeline_steps": {
     "add_subtitles": true,
     "trim_silence": true,

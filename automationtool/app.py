@@ -260,16 +260,17 @@ def get_config_paths():
         input_folder = config.get('input_folder', './input')
         output_folder = config.get('output_folder', './output')
         
-        # Use Hostinger KVM 2 paths
-        input_folder = '/opt/video-automation/input'
-        output_folder = '/opt/video-automation/output'
-        logger.info("🖥️ Running on Hostinger KVM 2 - using Hostinger paths")
+        # Normalize paths for the current OS
+        input_folder = os.path.normpath(input_folder)
+        output_folder = os.path.normpath(output_folder)
+        
+        logger.info(f"📁 Using configured paths - Input: {input_folder}, Output: {output_folder}")
         
         return input_folder, output_folder
     except Exception as e:
         logger.warning(f"⚠️ Could not read config, using default paths: {str(e)}")
-        # Use Hostinger KVM 2 default paths
-        return '/opt/video-automation/input', '/opt/video-automation/output'
+        # Use local development default paths
+        return './input', './output'
 
 def validate_environment():
     """Validate that required environment variables and dependencies are available"""
@@ -348,8 +349,17 @@ UPLOAD_TEMPLATE = """
             <input type="file" name="file" accept=".mp4,.mov,.avi,.mkv" required>
             <p>Select a video file (.mp4, .mov, .avi, .mkv)</p>
         </div>
-        <button type="submit" id="submitBtn">🚀 Process Video</button>
+        <button type="submit" id="submitBtn">📤 Upload Video</button>
     </form>
+    
+    <div id="phoneForm" class="hidden">
+        <h3>📱 Almost there!</h3>
+        <p>Please provide your phone number to start processing your video:</p>
+        <form id="phoneFormElement">
+            <input type="tel" id="phoneNumber" placeholder="Enter your phone number" required>
+            <button type="submit" id="phoneSubmitBtn">🚀 Start Processing</button>
+        </form>
+    </div>
     
     <div id="status"></div>
     
@@ -381,27 +391,85 @@ UPLOAD_TEMPLATE = """
                 const result = await response.json();
                 
                 if (response.ok) {
-                    if (result.status === 'PROCESSING') {
-                        currentTaskId = result.task_id;
-                        statusDiv.innerHTML = '<div class="info">✅ Video uploaded successfully! Processing started in background...</div>';
+                    if (result.status === 'UPLOADED') {
+                        statusDiv.innerHTML = '<div class="success">✅ Video uploaded successfully!</div>';
                         
-                        // Start checking status
-                        startStatusCheck();
+                        // Hide upload form and show phone form
+                        document.getElementById('uploadForm').style.display = 'none';
+                        document.getElementById('phoneForm').classList.remove('hidden');
+                        
+                        // Reset submit button
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '📤 Upload Video';
                     } else {
                         statusDiv.innerHTML = `<div class="error">❌ Upload failed: ${result.error || 'Unknown error'}</div>`;
                         submitBtn.disabled = false;
-                        submitBtn.textContent = '🚀 Process Video';
+                        submitBtn.textContent = '📤 Upload Video';
                     }
                 } else {
                     statusDiv.innerHTML = `<div class="error">❌ Upload error: ${result.error || 'Unknown error'}</div>`;
                     submitBtn.disabled = false;
-                    submitBtn.textContent = '🚀 Process Video';
+                    submitBtn.textContent = '📤 Upload Video';
                 }
             } catch (error) {
                 console.error('Upload error:', error);
                 statusDiv.innerHTML = `<div class="error">❌ Upload error: ${error.message}</div>`;
                 submitBtn.disabled = false;
-                submitBtn.textContent = '🚀 Process Video';
+                submitBtn.textContent = '📤 Upload Video';
+            }
+        });
+        
+        // Handle phone form submission
+        document.getElementById('phoneFormElement').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const phoneSubmitBtn = document.getElementById('phoneSubmitBtn');
+            const statusDiv = document.getElementById('status');
+            
+            // Disable submit button and show processing status
+            phoneSubmitBtn.disabled = true;
+            phoneSubmitBtn.textContent = '⏳ Starting...';
+            statusDiv.innerHTML = '<div class="info">⏳ Starting video processing...</div>';
+            
+            try {
+                const response = await fetch('/api/start-processing', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone_number: phoneNumber
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    if (result.status === 'PROCESSING') {
+                        currentTaskId = result.task_id;
+                        statusDiv.innerHTML = '<div class="info">✅ Video processing started! This may take a few minutes...</div>';
+                        
+                        // Hide phone form
+                        document.getElementById('phoneForm').classList.add('hidden');
+                        
+                        // Start checking status
+                        startStatusCheck();
+                    } else {
+                        statusDiv.innerHTML = `<div class="error">❌ Processing failed to start: ${result.error || 'Unknown error'}</div>`;
+                        phoneSubmitBtn.disabled = false;
+                        phoneSubmitBtn.textContent = '🚀 Start Processing';
+                    }
+                } else {
+                    statusDiv.innerHTML = `<div class="error">❌ Processing error: ${result.error || 'Unknown error'}</div>`;
+                    phoneSubmitBtn.disabled = false;
+                    phoneSubmitBtn.textContent = '🚀 Start Processing';
+                }
+            } catch (error) {
+                console.error('Processing error:', error);
+                statusDiv.innerHTML = `<div class="error">❌ Processing error: ${error.message}</div>`;
+                phoneSubmitBtn.disabled = false;
+                phoneSubmitBtn.textContent = '🚀 Start Processing';
             }
         });
         
@@ -441,8 +509,11 @@ UPLOAD_TEMPLATE = """
                 statusDiv.innerHTML = '<div class="success">✅ Video processed successfully! Redirecting to result page...</div>';
             } else if (result.status === 'FAILURE') {
                 statusDiv.innerHTML = `<div class="error">❌ Processing failed: ${result.error || 'Unknown error'}</div>`;
+                // Show upload form again
+                document.getElementById('uploadForm').style.display = 'block';
+                document.getElementById('phoneForm').classList.add('hidden');
                 submitBtn.disabled = false;
-                submitBtn.textContent = '🚀 Process Video';
+                submitBtn.textContent = '📤 Upload Video';
             }
         }
         
@@ -456,8 +527,11 @@ UPLOAD_TEMPLATE = """
                     window.location.href = `/task/${currentTaskId}/result`;
                 }, 2000);
             } else {
+                // Show upload form again
+                document.getElementById('uploadForm').style.display = 'block';
+                document.getElementById('phoneForm').classList.add('hidden');
                 submitBtn.disabled = false;
-                submitBtn.textContent = '🚀 Process Video';
+                submitBtn.textContent = '📤 Upload Video';
             }
         }
     </script>
@@ -531,23 +605,13 @@ def api_upload_file():
         import time
         time.sleep(1)
         
-        # Start background processing
-        task_id = str(uuid.uuid4())
-        logger.info(f"🔍 Starting background processing for: {file.filename} with task ID: {task_id}")
-        
-        # Start background thread
-        thread = threading.Thread(target=process_video_background, args=(task_id, file.filename))
-        thread.daemon = True
-        thread.start()
-        
-        # Return task ID immediately
+        # File uploaded successfully - wait for phone number before processing
         response_data = {
-            'message': 'Video upload successful! Processing started in background.',
-            'task_id': task_id,
-            'status': 'PROCESSING',
+            'message': 'Video uploaded successfully! Please provide your phone number to start processing.',
+            'status': 'UPLOADED',
             'filename': file.filename
         }
-        logger.info(f"🔍 Returning task ID: {task_id}")
+        logger.info(f"✅ File uploaded successfully: {file.filename}")
         return jsonify(response_data)
             
     except Exception as e:
@@ -610,22 +674,13 @@ def upload_file():
         import time
         time.sleep(1)
         
-        # Start background processing
-        task_id = str(uuid.uuid4())
-        logger.info(f"🔍 Starting background processing for: {file.filename} with task ID: {task_id}")
-        
-        # Start background thread
-        thread = threading.Thread(target=process_video_background, args=(task_id, file.filename))
-        thread.daemon = True
-        thread.start()
-        
-        # Return task ID immediately
+        # File uploaded successfully - wait for phone number before processing
         response_data = {
-            'message': 'Video upload successful! Processing started in background.',
-            'task_id': task_id,
-            'status': 'PROCESSING'
+            'message': 'Video uploaded successfully! Please provide your phone number to start processing.',
+            'status': 'UPLOADED',
+            'filename': file.filename
         }
-        logger.info(f"🔍 Returning task ID: {task_id}")
+        logger.info(f"✅ File uploaded successfully: {file.filename}")
         return jsonify(response_data)
             
     except Exception as e:
@@ -701,6 +756,59 @@ def manual_cleanup(video_base_name):
     except Exception as e:
         logger.error(f"Error starting manual cleanup: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/start-processing', methods=['POST'])
+def api_start_processing():
+    """Start video processing after phone number is provided"""
+    try:
+        data = request.get_json()
+        phone_number = data.get('phone_number')
+        
+        if not phone_number:
+            return jsonify({'error': 'Phone number is required'}), 400
+        
+        # Get paths from config
+        input_folder, output_folder = get_config_paths()
+        input_dir = Path(input_folder)
+        
+        # Find the uploaded video file
+        video_files = list(input_dir.glob('*.mp4')) + list(input_dir.glob('*.mov')) + list(input_dir.glob('*.avi')) + list(input_dir.glob('*.mkv'))
+        
+        if not video_files:
+            return jsonify({'error': 'No video file found. Please upload a video first.'}), 400
+        
+        # Use the first (and should be only) video file
+        video_file = video_files[0]
+        filename = video_file.name
+        
+        # Clear previous pipeline logs
+        clear_pipeline_logs()
+        
+        # Start background processing
+        task_id = str(uuid.uuid4())
+        logger.info(f"🔍 Starting background processing for: {filename} with task ID: {task_id} (Phone: {phone_number})")
+        
+        # Start background thread
+        thread = threading.Thread(target=process_video_background, args=(task_id, filename))
+        thread.daemon = True
+        thread.start()
+        
+        # Return task ID immediately
+        response_data = {
+            'message': 'Video processing started! This may take a few minutes.',
+            'task_id': task_id,
+            'status': 'PROCESSING',
+            'filename': filename
+        }
+        logger.info(f"🔍 Returning task ID: {task_id}")
+        return jsonify(response_data)
+        
+    except Exception as e:
+        logger.error(f"❌ Error starting video processing: {str(e)}")
+        return jsonify({
+            'error': 'Failed to start video processing',
+            'details': str(e)
+        }), 500
 
 @app.route('/api/task/<task_id>')
 def api_get_task_status(task_id):

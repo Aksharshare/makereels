@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { FiUpload, FiX, FiCheck, FiAlertCircle, FiMail, FiPlay } from 'react-icons/fi';
 import { getApiUrl, API_CONFIG } from '../../lib/config';
 
@@ -14,6 +14,7 @@ interface UploadStatus {
   thumbnail?: string;
   taskId?: string;
   processingStatus?: 'PROCESSING' | 'SUCCESS' | 'FAILURE';
+  processingProgress?: number;
   shortClips?: Array<{
     filename: string;
     url: string;
@@ -45,6 +46,32 @@ export default function VideoUpload() {
   });
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Progress bar effect for processing
+  useEffect(() => {
+    let progressInterval: NodeJS.Timeout;
+    
+    if (uploadStatus.processingStatus === 'PROCESSING') {
+      const startTime = Date.now();
+      const duration = 3 * 60 * 1000; // 3 minutes in milliseconds
+      
+      progressInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min((elapsed / duration) * 100, 100);
+        
+        setUploadStatus(prev => ({
+          ...prev,
+          processingProgress: progress
+        }));
+      }, 1000); // Update every second
+    }
+    
+    return () => {
+      if (progressInterval) {
+        clearInterval(progressInterval);
+      }
+    };
+  }, [uploadStatus.processingStatus]);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -129,8 +156,27 @@ export default function VideoUpload() {
 
       const result = await response.json();
 
-      if (response.ok && result.status === 'PROCESSING') {
-        // Upload successful, start processing
+      if (response.ok && result.status === 'UPLOADED') {
+        // Upload successful, show phone form
+        setUploadStatus({
+          isUploading: false,
+          progress: 100,
+          success: true,
+          error: null,
+          fileName: file.name,
+          file: file
+        });
+
+        // Show phone prompt
+        setPhonePrompt({
+          show: true,
+          phone: '',
+          isSubmitting: false,
+          submitted: false,
+          error: null
+        });
+      } else if (response.ok && result.status === 'PROCESSING') {
+        // Direct processing (fallback for old flow)
         setUploadStatus({
           isUploading: false,
           progress: 100,
@@ -183,6 +229,7 @@ export default function VideoUpload() {
       thumbnail: undefined,
       taskId: undefined,
       processingStatus: undefined,
+      processingProgress: undefined,
       shortClips: undefined
     });
     setPhonePrompt({
@@ -314,12 +361,40 @@ export default function VideoUpload() {
         body: JSON.stringify({ phone: phonePrompt.phone }),
       });
       
-      console.log('Phone submitted:', phonePrompt.phone);
-      setPhonePrompt(prev => ({ 
-        ...prev, 
-        isSubmitting: false, 
-        submitted: true 
-      }));
+      // Start video processing with phone number
+      const processResponse = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.START_PROCESSING), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phone_number: phonePrompt.phone }),
+      });
+      
+      const processResult = await processResponse.json();
+      
+      if (processResponse.ok && processResult.status === 'PROCESSING') {
+        console.log('Phone submitted and processing started:', phonePrompt.phone);
+        
+        // Hide phone form and show processing status
+        setPhonePrompt(prev => ({ 
+          ...prev, 
+          isSubmitting: false, 
+          show: false  // Hide the phone form
+        }));
+        
+        // Update upload status with task ID and start polling
+        setUploadStatus(prev => ({
+          ...prev,
+          taskId: processResult.task_id,
+          processingStatus: 'PROCESSING',  // Set processing status
+          processingProgress: 0  // Initialize progress bar
+        }));
+        
+        // Start polling for processing status
+        pollProcessingStatus(processResult.task_id);
+      } else {
+        throw new Error(processResult.error || 'Failed to start processing');
+      }
       
     } catch (err) {
       console.error('Phone submission error:', err);
@@ -400,7 +475,7 @@ export default function VideoUpload() {
         </div>
       )}
 
-      {uploadStatus.success && !phonePrompt.submitted && (
+      {uploadStatus.success && !uploadStatus.processingStatus && !phonePrompt.show && !uploadStatus.taskId && (
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 relative">
           {/* Remove button */}
           <button
@@ -448,20 +523,6 @@ export default function VideoUpload() {
             </div>
           </div>
 
-          {/* Show processing status */}
-          {uploadStatus.processingStatus === 'PROCESSING' && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                  <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-blue-900 text-sm">Processing in progress...</h4>
-                  <p className="text-xs text-blue-700">This may take a few minutes</p>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Show results if processing is complete */}
           {uploadStatus.processingStatus === 'SUCCESS' && uploadStatus.shortClips && uploadStatus.shortClips.length > 0 && (
@@ -526,17 +587,120 @@ export default function VideoUpload() {
         </div>
       )}
 
-      {uploadStatus.success && phonePrompt.submitted && (
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
-          <div className="text-center">
-            <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FiCheck className="w-6 h-6 text-white" />
+      {uploadStatus.success && (uploadStatus.processingStatus || uploadStatus.taskId) && (
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 relative">
+          {/* Remove button */}
+          <button
+            onClick={resetUpload}
+            className="absolute top-3 right-3 w-6 h-6 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors group"
+            title="Remove video"
+          >
+            <FiX className="w-3 h-3 text-gray-600 group-hover:text-gray-800" />
+          </button>
+          
+          <div className="text-center mb-6">
+            <div className="flex items-center justify-center space-x-4 mb-4">
+              <div className="w-16 h-12 rounded-lg shadow-lg relative overflow-hidden bg-gray-200">
+                {uploadStatus.thumbnail ? (
+                  <img 
+                    src={uploadStatus.thumbnail} 
+                    alt="Video thumbnail" 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <FiPlay className="w-6 h-6 text-gray-400" />
+                  </div>
+                )}
+              </div>
+              <div className="text-left">
+                <h3 className="font-bold text-gray-900 text-lg">
+                  {uploadStatus.processingStatus === 'PROCESSING' 
+                    ? 'Processing your video...' 
+                    : uploadStatus.processingStatus === 'SUCCESS'
+                    ? 'Video processed successfully!'
+                    : 'Video ready for processing!'}
+                </h3>
+                <p className="text-sm text-gray-600 mb-1">{uploadStatus.fileName}</p>
+                {uploadStatus.processingStatus === 'PROCESSING' && (
+                  <p className="text-xs text-blue-600">AI is creating viral shorts from your video...</p>
+                )}
+                {uploadStatus.processingStatus === 'SUCCESS' && uploadStatus.shortClips && (
+                  <p className="text-xs text-green-600">Generated {uploadStatus.shortClips.length} viral shorts!</p>
+                )}
+              </div>
             </div>
-            <p className="text-lg text-green-700 font-bold mb-2">We'll contact you soon!</p>
-            <p className="text-sm text-gray-600">Check your WhatsApp or SMS for updates</p>
           </div>
+
+          {/* Show processing status with progress bar */}
+          {uploadStatus.processingStatus === 'PROCESSING' && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                  <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 text-sm">Processing...</h3>
+                  <p className="text-xs text-gray-600">AI is creating viral shorts from your video</p>
+                </div>
+              </div>
+              
+              {/* Progress bar */}
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-1000 ease-linear"
+                  style={{ width: `${uploadStatus.processingProgress || 0}%` }}
+                ></div>
+              </div>
+              <p className="text-xs text-gray-600 mt-1 text-center">
+                {Math.round(uploadStatus.processingProgress || 0)}% complete
+              </p>
+            </div>
+          )}
+
+          {/* Show success status */}
+          {uploadStatus.processingStatus === 'SUCCESS' && uploadStatus.shortClips && (
+            <div className="space-y-3">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                    <FiCheck className="w-3 h-3 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm">Processing Complete!</h3>
+                    <p className="text-xs text-gray-600">Generated {uploadStatus.shortClips.length} viral shorts</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Show short clips */}
+              <div className="grid grid-cols-1 gap-3">
+                {uploadStatus.shortClips.map((clip, index) => (
+                  <div key={index} className="bg-white border border-gray-200 rounded-lg p-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-6 bg-gray-200 rounded flex items-center justify-center">
+                        <FiPlay className="w-3 h-3 text-gray-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{clip.filename}</p>
+                        <p className="text-xs text-gray-500">{typeof clip.size === 'number' ? clip.size.toFixed(1) + ' MB' : clip.size}</p>
+                      </div>
+                      <a
+                        href={`${API_CONFIG.BASE_URL}${clip.url}`}
+                        download={clip.filename}
+                        className="text-blue-600 hover:text-blue-700 text-xs font-medium"
+                      >
+                        Download
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
+
 
       {uploadStatus.error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">

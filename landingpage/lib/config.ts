@@ -8,6 +8,7 @@ export const API_CONFIG = {
   // API endpoints
   ENDPOINTS: {
     UPLOAD: '/api/upload',
+    START_PROCESSING: '/api/start-processing',
     TASK_STATUS: '/api/task',
     TASK_RESULT: '/api/task'
   }
