@@ -1,0 +1,46 @@
+services:
+  frontend:
+    build:
+      context: ./landingpage
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    volumes:
+      - ./landingpage:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+    networks:
+      - makereels-network
+    restart: unless-stopped
+    command: npm run dev
+
+  backend:
+    build:
+      context: ./automationtool
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - PYTHONPATH=/app
+      - FLASK_ENV=development
+    env_file:
+      - ./automationtool/config/config.env
+    volumes:
+      - ./automationtool:/app
+      - ./automationtool/input:/app/input
+      - ./automationtool/output:/app/output
+      - ./automationtool/config:/app/config
+    networks:
+      - makereels-network
+    restart: unless-stopped
+    command: python app.py
+
+networks:
+  makereels-network:
+    driver: bridge

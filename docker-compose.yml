@@ -1,0 +1,50 @@
+services:
+  frontend:
+    build:
+      context: ./landingpage
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - makereels-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./automationtool
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - PYTHONPATH=/app
+      - FLASK_ENV=production
+    env_file:
+      - ./automationtool/config/config.env
+    volumes:
+      - ./automationtool/input:/app/input
+      - ./automationtool/output:/app/output
+      - ./automationtool/config:/app/config
+    networks:
+      - makereels-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  makereels-network:
+    driver: bridge
+
+volumes:
+  input_data:
+  output_data:
+  config_data:
