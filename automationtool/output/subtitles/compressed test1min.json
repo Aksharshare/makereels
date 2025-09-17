@@ -1,0 +1,556 @@
+{
+  "segments": [
+    {
+      "start": 0.16,
+      "end": 0.71999997,
+      "text": "Are you guys a",
+      "score": 0.39633981250000005,
+      "sentiment": {},
+      "confidence": 0.9908495312500001
+    },
+    {
+      "start": 0.71999997,
+      "end": 1.22,
+      "text": "couple?",
+      "score": 0.39981258000000003,
+      "sentiment": {},
+      "confidence": 0.99953145
+    },
+    {
+      "start": 1.28,
+      "end": 1.5999999,
+      "text": "Yes. We",
+      "score": 0.38388739000000005,
+      "sentiment": {},
+      "confidence": 0.9597184750000001
+    },
+    {
+      "start": 1.5999999,
+      "end": 1.8399999,
+      "text": "are.",
+      "score": 0.39939152,
+      "sentiment": {},
+      "confidence": 0.9984788
+    },
+    {
+      "start": 1.8399999,
+      "end": 4.0,
+      "text": "Yeah. Would you mind sharing a picture of how you guys first",
+      "score": 0.3897599635449219,
+      "sentiment": {},
+      "confidence": 0.9743999088623047
+    },
+    {
+      "start": 4.0,
+      "end": 5.92,
+      "text": "met? We met on Bumble in",
+      "score": 0.387902956,
+      "sentiment": {},
+      "confidence": 0.9697573899999999
+    },
+    {
+      "start": 5.92,
+      "end": 8.0,
+      "text": "Dallas. We live in Dallas There you",
+      "score": 0.38200819518750007,
+      "sentiment": {},
+      "confidence": 0.95502048796875
+    },
+    {
+      "start": 8.0,
+      "end": 8.08,
+      "text": "go.",
+      "score": 0.3981781,
+      "sentiment": {},
+      "confidence": 0.99544525
+    },
+    {
+      "start": 8.16,
+      "end": 13.759999,
+      "text": "Weekend. And we met our well, his family has a dog, and, that's how we have",
+      "score": 0.39722605482226564,
+      "sentiment": {},
+      "confidence": 0.993065137055664
+    },
+    {
+      "start": 13.759999,
+      "end": 16.287273,
+      "text": "Bowen. What's his what's her",
+      "score": 0.38311226500000006,
+      "sentiment": {},
+      "confidence": 0.9577806625
+    },
+    {
+      "start": 16.287273,
+      "end": 16.659546,
+      "text": "name?",
+      "score": 0.39963894,
+      "sentiment": {},
+      "confidence": 0.99909735
+    },
+    {
+      "start": 16.659546,
+      "end": 17.031818,
+      "text": "Beau.",
+      "score": 0.31782180000000004,
+      "sentiment": {},
+      "confidence": 0.7945545
+    },
+    {
+      "start": 17.031818,
+      "end": 18.520908,
+      "text": "Beau. How old is",
+      "score": 0.393734582,
+      "sentiment": {},
+      "confidence": 0.984336455
+    },
+    {
+      "start": 18.520908,
+      "end": 18.893183,
+      "text": "she?",
+      "score": 0.39976744000000003,
+      "sentiment": {},
+      "confidence": 0.9994186
+    },
+    {
+      "start": 18.893183,
+      "end": 19.265455,
+      "text": "Two.",
+      "score": 0.37247448,
+      "sentiment": {},
+      "confidence": 0.9311862
+    },
+    {
+      "start": 19.265455,
+      "end": 19.637728,
+      "text": "Two.",
+      "score": 0.37149942,
+      "sentiment": {},
+      "confidence": 0.92874855
+    },
+    {
+      "start": 19.637728,
+      "end": 20.01,
+      "text": "Two.",
+      "score": 0.27917304000000004,
+      "sentiment": {},
+      "confidence": 0.6979326
+    },
+    {
+      "start": 20.01,
+      "end": 23.360455,
+      "text": "Okay. So what was your first impression of",
+      "score": 0.398163478625,
+      "sentiment": {},
+      "confidence": 0.9954086965625
+    },
+    {
+      "start": 23.360455,
+      "end": 24.849546,
+      "text": "her? First impression of",
+      "score": 0.394472845,
+      "sentiment": {},
+      "confidence": 0.9861821125
+    },
+    {
+      "start": 24.849546,
+      "end": 26.338638,
+      "text": "her? I mean, she's",
+      "score": 0.317118159,
+      "sentiment": {},
+      "confidence": 0.7927953974999999
+    },
+    {
+      "start": 26.338638,
+      "end": 27.455456,
+      "text": "gorgeous. I'm just",
+      "score": 0.246403385,
+      "sentiment": {},
+      "confidence": 0.6160084625
+    },
+    {
+      "start": 27.455456,
+      "end": 27.827728,
+      "text": "looking.",
+      "score": 0.15810032000000002,
+      "sentiment": {},
+      "confidence": 0.3952508
+    },
+    {
+      "start": 27.827728,
+      "end": 28.2,
+      "text": "Right.",
+      "score": 0.394554664,
+      "sentiment": {},
+      "confidence": 0.98638666
+    },
+    {
+      "start": 28.84,
+      "end": 30.04,
+      "text": "Yeah. What what would you",
+      "score": 0.35469185300000006,
+      "sentiment": {},
+      "confidence": 0.8867296325
+    },
+    {
+      "start": 30.04,
+      "end": 32.36,
+      "text": "say? He was very charming and very",
+      "score": 0.3992375408125,
+      "sentiment": {},
+      "confidence": 0.99809385203125
+    },
+    {
+      "start": 32.36,
+      "end": 32.86,
+      "text": "sweet.",
+      "score": 0.399678016,
+      "sentiment": {},
+      "confidence": 0.99919504
+    },
+    {
+      "start": 33.32,
+      "end": 35.88,
+      "text": "Okay. And how long you guys been in a relationship",
+      "score": 0.37642297867968755,
+      "sentiment": {},
+      "confidence": 0.9410574466992188
+    },
+    {
+      "start": 35.88,
+      "end": 36.760002,
+      "text": "for? Five",
+      "score": 0.39635354,
+      "sentiment": {},
+      "confidence": 0.99088385
+    },
+    {
+      "start": 36.760002,
+      "end": 37.88,
+      "text": "years. Five years",
+      "score": 0.398939197,
+      "sentiment": {},
+      "confidence": 0.9973479925
+    },
+    {
+      "start": 37.88,
+      "end": 38.84,
+      "text": "in? Five years",
+      "score": 0.3831827,
+      "sentiment": {},
+      "confidence": 0.9579567499999999
+    },
+    {
+      "start": 38.84,
+      "end": 40.120003,
+      "text": "in. My favorite thing about",
+      "score": 0.37962025450000003,
+      "sentiment": {},
+      "confidence": 0.94905063625
+    },
+    {
+      "start": 40.120003,
+      "end": 42.685,
+      "text": "him? His heart, and he's very",
+      "score": 0.38457368200000003,
+      "sentiment": {},
+      "confidence": 0.961434205
+    },
+    {
+      "start": 42.685,
+      "end": 43.185,
+      "text": "kind.",
+      "score": 0.39914836000000004,
+      "sentiment": {},
+      "confidence": 0.9978709
+    },
+    {
+      "start": 44.364998,
+      "end": 44.605,
+      "text": "I",
+      "score": 0.3093502,
+      "sentiment": {},
+      "confidence": 0.7733755
+    },
+    {
+      "start": 44.605,
+      "end": 45.485,
+      "text": "see. What did you",
+      "score": 0.35717717400000004,
+      "sentiment": {},
+      "confidence": 0.892942935
+    },
+    {
+      "start": 45.485,
+      "end": 47.005,
+      "text": "say? Her sense of",
+      "score": 0.396187772,
+      "sentiment": {},
+      "confidence": 0.99046943
+    },
+    {
+      "start": 47.005,
+      "end": 48.364998,
+      "text": "humor. Sense of",
+      "score": 0.38256005000000004,
+      "sentiment": {},
+      "confidence": 0.956400125
+    },
+    {
+      "start": 48.364998,
+      "end": 48.925,
+      "text": "humor? Sense of",
+      "score": 0.37001883,
+      "sentiment": {},
+      "confidence": 0.9250470749999999
+    },
+    {
+      "start": 48.925,
+      "end": 49.245,
+      "text": "humor.",
+      "score": 0.30758733600000004,
+      "sentiment": {},
+      "confidence": 0.76896834
+    },
+    {
+      "start": 49.245,
+      "end": 49.745,
+      "text": "Oh.",
+      "score": 0.21298513600000002,
+      "sentiment": {},
+      "confidence": 0.53246284
+    },
+    {
+      "start": 50.045,
+      "end": 50.545,
+      "text": "Oh.",
+      "score": 0.18327408,
+      "sentiment": {},
+      "confidence": 0.4581852
+    },
+    {
+      "start": 50.845,
+      "end": 54.765,
+      "text": "Nice. If somebody's getting into a relationship today, what advice would you guys give to",
+      "score": 0.39703411540869143,
+      "sentiment": {},
+      "confidence": 0.9925852885217286
+    },
+    {
+      "start": 54.765,
+      "end": 55.265,
+      "text": "them?",
+      "score": 0.3956016,
+      "sentiment": {},
+      "confidence": 0.989004
+    },
+    {
+      "start": 57.15,
+      "end": 57.39,
+      "text": "What",
+      "score": 0.285325,
+      "sentiment": {},
+      "confidence": 0.7133125
+    },
+    {
+      "start": 57.39,
+      "end": 58.510002,
+      "text": "advice? Be open and",
+      "score": 0.39364516400000005,
+      "sentiment": {},
+      "confidence": 0.98411291
+    },
+    {
+      "start": 58.510002,
+      "end": 59.550003,
+      "text": "honest. There you",
+      "score": 0.39768708,
+      "sentiment": {},
+      "confidence": 0.9942177
+    },
+    {
+      "start": 59.550003,
+      "end": 60.27,
+      "text": "go. There you have",
+      "score": 0.39859602800000005,
+      "sentiment": {},
+      "confidence": 0.9964900700000001
+    },
+    {
+      "start": 60.27,
+      "end": 61.23,
+      "text": "it. Be open and",
+      "score": 0.397737786,
+      "sentiment": {},
+      "confidence": 0.994344465
+    },
+    {
+      "start": 61.23,
+      "end": 62.27,
+      "text": "honest. I",
+      "score": 0.39843711800000003,
+      "sentiment": {},
+      "confidence": 0.996092795
+    },
+    {
+      "start": 62.27,
+      "end": 62.670002,
+      "text": "see.",
+      "score": 0.39954472,
+      "sentiment": {},
+      "confidence": 0.9988618
+    },
+    {
+      "start": 62.670002,
+      "end": 63.23,
+      "text": "Okay. That",
+      "score": 0.38110677,
+      "sentiment": {},
+      "confidence": 0.9527669249999999
+    },
+    {
+      "start": 63.23,
+      "end": 63.71,
+      "text": "helps. Your",
+      "score": 0.299228274,
+      "sentiment": {},
+      "confidence": 0.7480706850000001
+    },
+    {
+      "start": 63.71,
+      "end": 64.21,
+      "text": "intentions.",
+      "score": 0.32199244000000005,
+      "sentiment": {},
+      "confidence": 0.8049811
+    },
+    {
+      "start": 64.75,
+      "end": 65.15,
+      "text": "What? Come",
+      "score": 0.39515444000000005,
+      "sentiment": {},
+      "confidence": 0.9878861000000001
+    },
+    {
+      "start": 65.15,
+      "end": 66.11,
+      "text": "again? Open and",
+      "score": 0.382143502,
+      "sentiment": {},
+      "confidence": 0.955358755
+    },
+    {
+      "start": 66.11,
+      "end": 66.91,
+      "text": "honest. Got your",
+      "score": 0.33912851000000005,
+      "sentiment": {},
+      "confidence": 0.847821275
+    },
+    {
+      "start": 66.91,
+      "end": 67.41,
+      "text": "intentions.",
+      "score": 0.33357052000000004,
+      "sentiment": {},
+      "confidence": 0.8339263
+    },
+    {
+      "start": 67.95,
+      "end": 68.83,
+      "text": "Right. That's",
+      "score": 0.399042988,
+      "sentiment": {},
+      "confidence": 0.9976074699999999
+    },
+    {
+      "start": 68.83,
+      "end": 69.31,
+      "text": "nice.",
+      "score": 0.39908976,
+      "sentiment": {},
+      "confidence": 0.9977244
+    },
+    {
+      "start": 69.31,
+      "end": 72.244995,
+      "text": "Okay. And if if you guys are open sharing your name and what do you do",
+      "score": 0.3789521473479004,
+      "sentiment": {},
+      "confidence": 0.9473803683697509
+    },
+    {
+      "start": 72.244995,
+      "end": 74.16499,
+      "text": "following? Lauren, I've been type of",
+      "score": 0.32642243262500004,
+      "sentiment": {},
+      "confidence": 0.8160560815625
+    },
+    {
+      "start": 74.16499,
+      "end": 75.045,
+      "text": "sales. I'm",
+      "score": 0.31484680200000004,
+      "sentiment": {},
+      "confidence": 0.787117005
+    },
+    {
+      "start": 75.045,
+      "end": 78.485,
+      "text": "Jordan. I'm a customer success manager for a construction tech",
+      "score": 0.3633137516171875,
+      "sentiment": {},
+      "confidence": 0.9082843790429687
+    },
+    {
+      "start": 78.485,
+      "end": 79.365,
+      "text": "company. Oh,",
+      "score": 0.34177641999999997,
+      "sentiment": {},
+      "confidence": 0.8544410499999999
+    },
+    {
+      "start": 79.365,
+      "end": 79.845,
+      "text": "perfect.",
+      "score": 0.39942140000000004,
+      "sentiment": {},
+      "confidence": 0.9985535
+    },
+    {
+      "start": 79.845,
+      "end": 80.564995,
+      "text": "Alright. Thank you",
+      "score": 0.39876097000000005,
+      "sentiment": {},
+      "confidence": 0.996902425
+    },
+    {
+      "start": 80.564995,
+      "end": 81.204994,
+      "text": "guys. Have a great",
+      "score": 0.38656018200000003,
+      "sentiment": {},
+      "confidence": 0.966400455
+    },
+    {
+      "start": 81.204994,
+      "end": 81.604996,
+      "text": "day. Thank",
+      "score": 0.38166122,
+      "sentiment": {},
+      "confidence": 0.95415305
+    },
+    {
+      "start": 81.604996,
+      "end": 82.104996,
+      "text": "you.",
+      "score": 0.39428416,
+      "sentiment": {},
+      "confidence": 0.9857104
+    }
+  ]
+}
