@@ -1,6 +1,12 @@
 # Use Node.js 18 Alpine image as base
 FROM node:18-alpine
 
+# Add metadata labels
+LABEL maintainer="MakeReels Team"
+LABEL description="MakeReels Frontend - AI-Powered Video Automation Platform"
+LABEL version="1.0.0"
+LABEL repository="https://github.com/aksharshare/makereelsv2"
+
 # Install system dependencies
 RUN apk add --no-cache libc6-compat curl
 

@@ -1,6 +1,12 @@
 # Use Python 3.11 slim image as base
 FROM python:3.11-slim
 
+# Add metadata labels
+LABEL maintainer="MakeReels Team"
+LABEL description="MakeReels Backend - AI-Powered Video Automation Platform"
+LABEL version="1.0.0"
+LABEL repository="https://github.com/aksharshare/makereelsv2"
+
 # Set working directory
 WORKDIR /app
 
