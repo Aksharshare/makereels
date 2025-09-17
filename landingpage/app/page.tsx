@@ -40,7 +40,7 @@ export default function Home() {
 
   // Countdown timer effect
   useEffect(() => {
-    const targetDate = new Date('September 25, 2025 00:00:00').getTime();
+    const targetDate = new Date('September 30, 2025 00:00:00').getTime();
     
     const interval = setInterval(() => {
       const now = new Date().getTime();
